@@ -7,19 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explore.SqlServer", "Explor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\..\common\lib\Core\Core.csproj", "{063CAC80-6ED9-46B8-ADB5-F8CA2478BFE4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{C6D3F19B-AE39-400A-A201-E7D5C107973D}"
+	ProjectSection(SolutionItems) = preProject
+		Sql\Create_AllTypes.sql = Sql\Create_AllTypes.sql
+		Sql\Create_Product_tables.sql = Sql\Create_Product_tables.sql
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs2013:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Explore.SqlServer\\Explore.SqlServer.csproj
-		SccProjectName1 = Explore.SqlServer
-		SccLocalPath1 = Explore.SqlServer
-		SccProjectUniqueName2 = ..\\..\\common\\lib\\Core\\Core.csproj
-		SccProjectName2 = ../../common/lib/Core
-		SccLocalPath2 = ..\\..\\common\\lib\\Core
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
