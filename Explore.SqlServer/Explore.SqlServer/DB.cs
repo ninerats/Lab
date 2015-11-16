@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Text;
+using System.Xml;
 
 namespace Explore.SqlServer
 {
@@ -87,14 +89,43 @@ namespace Explore.SqlServer
             }
         }
 
-        public static DataTable GetAllTypesDataTable()
+        public static DataTable GetDataTableForTable(string tableName)
         {
             using (var conn = GetConn())
             {
-                var adapter = new SqlDataAdapter("select * from AllTypes", conn);
+                var adapter = new SqlDataAdapter(String.Format("select * from {0}", tableName), conn);
                 var ds = new DataSet();
-                adapter.Fill(ds, "AllTypes");
-                return ds.Tables["AllTypes"];
+                adapter.Fill(ds, tableName);
+                return ds.Tables[tableName];
+            }
+        }
+
+        public static void SerializeTable(DataTable table, string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.Create))
+            {
+                table.WriteXml(stream, XmlWriteMode.WriteSchema);
+            }
+        }
+
+        public static DataTable DeserializeTable(string tableName, string fileName)
+        {
+            var readTable = new DataTable(tableName);
+            using (var reader = new XmlTextReader(new FileStream(fileName, FileMode.Open)))
+            {
+                var mode = readTable.ReadXml(reader);
+            }
+            return readTable;
+        }
+
+        public static DataTable GetDataTableForQuery(string commandText, string tableName)
+        {
+            using (var conn = GetConn())
+            {
+                var adapter = new SqlDataAdapter(commandText,conn);
+                var ds = new DataSet();
+                adapter.Fill(ds, tableName);
+                return ds.Tables[tableName];
             }
         }
     }

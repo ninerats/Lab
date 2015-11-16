@@ -9,29 +9,33 @@ using NUnit.Framework;
 namespace Explore.SqlServer
 {
     [TestFixture]
-    public class SerializeTable
+    public class SerializeTableTest
     {
         [Test]
         public void AllTypesRoundTrip()
         {
             DB.ResetAllTypes();
             var fileName = "alltypes.xml";
-            var table = DB.GetAllTypesDataTable();
-            using (var stream = new FileStream(fileName,FileMode.Create))
-            {
-                table.WriteXml(stream,XmlWriteMode.WriteSchema);
-            }
-            var readTable = new DataTable("AllTypes");
-            using (var reader = new XmlTextReader(new FileStream(fileName, FileMode.Open)))
-            {
-                var mode = readTable.ReadXml(reader);
-               
-            }
+            var table = DB.GetDataTableForTable("AllTypes");
+            DB.SerializeTable(table, fileName);
+            var readTable = DB.DeserializeTable("AllTypes", fileName);
             var adapter = new SqlDataAdapter("SELECT * FROM AllTypes", DB.GetConn());
             var cb = new SqlCommandBuilder(adapter);
             new SqlCommand("DELETE FROM AllTypes WHERE ID=2",DB.GetConn()).ExecuteNonQuery();
             readTable.Rows[0]["ID"] = 2;
             adapter.Update(readTable);
+
+            // compare the data
+            DataTable updatedTable = DB.GetDataTableForQuery("select * from AllTypes", "AllTypes");
+            Assert.AreEqual(2, updatedTable.Rows.Count);
+            foreach (DataColumn column in updatedTable.Columns)
+            {
+                if (column.ColumnName != "Mytimestamp" && column.ColumnName != "ID")
+                {
+                    Assert.AreEqual(updatedTable.Rows[0][column.ColumnName], updatedTable.Rows[1][column.ColumnName]);
+                }
+            }
+
         }
 
         [Test]
@@ -48,10 +52,7 @@ namespace Explore.SqlServer
             {
                 var path = string.Format("{0}.xml", table.TableName);
                 Console.WriteLine("path={0}", path);
-                using (var fs = new FileStream(path, FileMode.Create))
-                {
-                    table.WriteXml(fs, XmlWriteMode.WriteSchema, false);
-                }
+                DB.SerializeTable(table,path);
             }
         }
 

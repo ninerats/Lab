@@ -89,6 +89,13 @@ namespace Explore.SqlServer
         }
 
         [Test]
+        public void SerializeProduct()
+        {
+            var table = DB.GetDataTableForTable("Production.Product");
+            DB.SerializeTable(table, "product.xml");
+        }
+
+        [Test]
         public void DumpTypeNames()
         {
             using (var conn = DB.GetConn())
